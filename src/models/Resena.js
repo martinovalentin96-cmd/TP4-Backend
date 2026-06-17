@@ -1,13 +1,13 @@
 const { DataTypes } = require('sequelize');
 
 module.exports = (sequelize) => {
-  return sequelize.define('Editorial', {
-    nombre: {
-      type: DataTypes.STRING,
+  return sequelize.define('Resena', {
+    puntaje: {
+      type: DataTypes.INTEGER,
       allowNull: false
     },
-    pais: {
-      type: DataTypes.STRING,
+    comentario: {
+      type: DataTypes.TEXT,
       allowNull: true
     }
   });
