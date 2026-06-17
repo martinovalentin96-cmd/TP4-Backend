@@ -4,8 +4,12 @@ const { body, validationResult } = require('express-validator');
 const { Editorial } = require('../models');
 
 router.get('/', async (req, res) => {
-  const editoriales = await Editorial.findAll();
-  res.json(editoriales);
+  try {
+    const editoriales = await Editorial.findAll();
+    res.json(editoriales);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 });
 
 router.post('/', [
@@ -14,8 +18,12 @@ router.post('/', [
   const errores = validationResult(req);
   if (!errores.isEmpty()) return res.status(400).json({ errors: errores.array() });
 
-  const editorial = await Editorial.create({ nombre: req.body.nombre, pais: req.body.pais });
-  res.status(201).json(editorial);
+  try {
+    const editorial = await Editorial.create({ nombre: req.body.nombre, pais: req.body.pais });
+    res.status(201).json(editorial);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 });
 
 router.put('/:id', [
@@ -24,19 +32,27 @@ router.put('/:id', [
   const errores = validationResult(req);
   if (!errores.isEmpty()) return res.status(400).json({ errors: errores.array() });
 
-  const editorial = await Editorial.findByPk(req.params.id);
-  if (!editorial) return res.status(404).json({ error: 'Editorial no encontrada' });
+  try {
+    const editorial = await Editorial.findByPk(req.params.id);
+    if (!editorial) return res.status(404).json({ error: 'Editorial no encontrada' });
 
-  await editorial.update({ nombre: req.body.nombre, pais: req.body.pais });
-  res.json(editorial);
+    await editorial.update({ nombre: req.body.nombre, pais: req.body.pais });
+    res.json(editorial);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 });
 
 router.delete('/:id', async (req, res) => {
-  const editorial = await Editorial.findByPk(req.params.id);
-  if (!editorial) return res.status(404).json({ error: 'Editorial no encontrada' });
+  try {
+    const editorial = await Editorial.findByPk(req.params.id);
+    if (!editorial) return res.status(404).json({ error: 'Editorial no encontrada' });
 
-  await editorial.destroy();
-  res.status(204).send();
+    await editorial.destroy();
+    res.status(204).send();
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 });
 
 module.exports = router;

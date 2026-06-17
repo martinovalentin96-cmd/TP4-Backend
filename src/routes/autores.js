@@ -4,14 +4,22 @@ const { body, validationResult } = require('express-validator');
 const { Autor, Libro } = require('../models');
 
 router.get('/', async (req, res) => {
-  const autores = await Autor.findAll();
-  res.json(autores);
+  try {
+    const autores = await Autor.findAll();
+    res.json(autores);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 });
 
 router.get('/:id', async (req, res) => {
-  const autor = await Autor.findByPk(req.params.id, { include: Libro });
-  if (!autor) return res.status(404).json({ error: 'Autor no encontrado' });
-  res.json(autor);
+  try {
+    const autor = await Autor.findByPk(req.params.id, { include: Libro });
+    if (!autor) return res.status(404).json({ error: 'Autor no encontrado' });
+    res.json(autor);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 });
 
 router.post('/', [
@@ -20,8 +28,12 @@ router.post('/', [
   const errores = validationResult(req);
   if (!errores.isEmpty()) return res.status(400).json({ errors: errores.array() });
 
-  const autor = await Autor.create({ nombre: req.body.nombre, bio: req.body.bio });
-  res.status(201).json(autor);
+  try {
+    const autor = await Autor.create({ nombre: req.body.nombre, bio: req.body.bio });
+    res.status(201).json(autor);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 });
 
 router.put('/:id', [
@@ -30,19 +42,27 @@ router.put('/:id', [
   const errores = validationResult(req);
   if (!errores.isEmpty()) return res.status(400).json({ errors: errores.array() });
 
-  const autor = await Autor.findByPk(req.params.id);
-  if (!autor) return res.status(404).json({ error: 'Autor no encontrado' });
+  try {
+    const autor = await Autor.findByPk(req.params.id);
+    if (!autor) return res.status(404).json({ error: 'Autor no encontrado' });
 
-  await autor.update({ nombre: req.body.nombre, bio: req.body.bio });
-  res.json(autor);
+    await autor.update({ nombre: req.body.nombre, bio: req.body.bio });
+    res.json(autor);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 });
 
 router.delete('/:id', async (req, res) => {
-  const autor = await Autor.findByPk(req.params.id);
-  if (!autor) return res.status(404).json({ error: 'Autor no encontrado' });
+  try {
+    const autor = await Autor.findByPk(req.params.id);
+    if (!autor) return res.status(404).json({ error: 'Autor no encontrado' });
 
-  await autor.destroy();
-  res.status(204).send();
+    await autor.destroy();
+    res.status(204).send();
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 });
 
 module.exports = router;
