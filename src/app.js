@@ -12,8 +12,8 @@ app.use('/api/generos',     require('./routes/generos'));
 app.use('/api/editoriales', require('./routes/editoriales'));
 app.use('/api/usuarios',    require('./routes/usuarios'));
 app.use('/api/auth',        require('./routes/auth'));
-//app.use('/api/pedidos',     require('./routes/pedidos'));
-//app.use('/api/resenas',     require('./routes/resenas'));
+app.use('/api/pedidos',     require('./routes/pedidos'));
+app.use('/api/resenas',     require('./routes/resenas'));
 
 if (require.main === module) {
   const { sequelize } = require('./models');
