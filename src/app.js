@@ -15,6 +15,7 @@ app.use('/api/auth',        require('./routes/auth'));
 app.use('/api/pedidos',     require('./routes/pedidos'));
 app.use('/api/resena',     require('./routes/resena'));
 
+
 if (require.main === module) {
   const { sequelize } = require('./models');
   sequelize.sync().then(() => {
