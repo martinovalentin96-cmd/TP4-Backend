@@ -66,6 +66,8 @@ router.post('/', verificarToken, [
 
     for (const item of itemsConPrecio) {
       await ItemPedido.create({ ...item, pedidoId: pedido.id });
+      const libro = await Libro.findByPk(item.libroId);
+      await libro.update({ stock: libro.stock - item.cantidad });
     }
 
     res.status(201).json(pedido);

@@ -1,8 +1,33 @@
 const express = require('express');
 const router = express.Router();
 const { body, validationResult } = require('express-validator');
-const { Resena, Usuario } = require('../models');
-const { verificarToken } = require('../middleware/auth');
+const { Resena, Usuario, Libro } = require('../models');
+const { verificarToken, soloAdmin } = require('../middleware/auth');
+
+router.get('/', verificarToken, soloAdmin, async (req, res) => {
+  try {
+    const resenas = await Resena.findAll({
+      include: [
+        { model: Usuario, attributes: ['nombre'] },
+        { model: Libro, attributes: ['titulo'] }
+      ]
+    });
+    res.json(resenas);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+router.delete('/admin/:id', verificarToken, soloAdmin, async (req, res) => {
+  try {
+    const resena = await Resena.findByPk(req.params.id);
+    if (!resena) return res.status(404).json({ error: 'Reseña no encontrada' });
+    await resena.destroy();
+    res.status(204).send();
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
 
 router.get('/libro/:id', async (req, res) => {
   try {

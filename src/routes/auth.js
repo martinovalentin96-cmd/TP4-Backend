@@ -23,7 +23,7 @@ router.post('/register', [
     });
 
     const token = jwt.sign({ id: usuario.id, rol: usuario.rol }, SECRET);
-    res.status(201).json({ token });
+    res.status(201).json({ token, usuario: { id: usuario.id, nombre: usuario.nombre, email: usuario.email, rol: usuario.rol } });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
@@ -44,7 +44,7 @@ router.post('/login', [
     if (!passwordValida) return res.status(401).json({ error: 'Email o contraseña incorrectos' });
 
     const token = jwt.sign({ id: usuario.id, rol: usuario.rol }, SECRET);
-    res.json({ token });
+    res.json({ token, usuario: { id: usuario.id, nombre: usuario.nombre, email: usuario.email, rol: usuario.rol } });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

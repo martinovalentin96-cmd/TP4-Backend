@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { body, validationResult } = require('express-validator');
 const { Op } = require('sequelize');
-const { Libro, Autor, Genero, Editorial } = require('../models');
+const { Libro, Autor, Genero, Editorial, Resena, Usuario } = require('../models');
 
 router.get('/', async (req, res) => {
   try {
@@ -34,7 +34,7 @@ router.get('/', async (req, res) => {
 router.get('/:id', async (req, res) => {
   try {
     const libro = await Libro.findByPk(req.params.id, {
-      include: [Autor, Genero, Editorial]
+      include: [Autor, Genero, Editorial, { model: Resena, include: [Usuario] }]
     });
     if (!libro) return res.status(404).json({ error: 'Libro no encontrado' });
     res.json(libro);

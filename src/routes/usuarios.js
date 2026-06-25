@@ -38,4 +38,15 @@ router.delete('/:id', verificarToken, soloAdmin, async (req, res) => {
   }
 });
 
+router.put('/:id', verificarToken, soloAdmin, async (req, res) => {
+  try {
+    const usuario = await Usuario.findByPk(req.params.id);
+    if (!usuario) return res.status(404).json({ error: 'Usuario no encontrado' });
+    await usuario.update({ rol: req.body.rol });
+    res.json(usuario);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 module.exports = router;
