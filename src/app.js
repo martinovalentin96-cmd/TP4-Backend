@@ -18,7 +18,9 @@ app.use('/api/resena',     require('./routes/resenas'));
 
 if (require.main === module) {
   const { sequelize } = require('./models');
-  sequelize.sync().then(() => {
+  const seed = require('./seed');
+  sequelize.sync().then(async () => {
+    await seed();
     app.listen(3000, () => console.log('Servidor corriendo en puerto 3000'));
   });
 }
