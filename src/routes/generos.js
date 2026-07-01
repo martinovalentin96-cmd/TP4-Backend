@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { body, validationResult } = require('express-validator');
 const { Genero } = require('../models');
+const { verificarToken, soloAdmin } = require('../middleware/auth');
 
 router.get('/', async (req, res) => {
   try {
@@ -12,7 +13,7 @@ router.get('/', async (req, res) => {
   }
 });
 
-router.post('/', [
+router.post('/', verificarToken, soloAdmin, [
   body('nombre').notEmpty().withMessage('El nombre es obligatorio')
 ], async (req, res) => {
   const errores = validationResult(req);
@@ -26,7 +27,7 @@ router.post('/', [
   }
 });
 
-router.put('/:id', [
+router.put('/:id', verificarToken, soloAdmin, [
   body('nombre').notEmpty().withMessage('El nombre es obligatorio')
 ], async (req, res) => {
   const errores = validationResult(req);
@@ -43,7 +44,7 @@ router.put('/:id', [
   }
 });
 
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', verificarToken, soloAdmin, async (req, res) => {
   try {
     const genero = await Genero.findByPk(req.params.id);
     if (!genero) return res.status(404).json({ error: 'Género no encontrado' });

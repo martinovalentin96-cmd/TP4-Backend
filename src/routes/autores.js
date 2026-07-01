@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { body, validationResult } = require('express-validator');
 const { Autor, Libro } = require('../models');
+const { verificarToken, soloAdmin } = require('../middleware/auth');
 
 router.get('/', async (req, res) => {
   try {
@@ -22,7 +23,7 @@ router.get('/:id', async (req, res) => {
   }
 });
 
-router.post('/', [
+router.post('/', verificarToken, soloAdmin, [
   body('nombre').notEmpty().withMessage('El nombre es obligatorio')
 ], async (req, res) => {
   const errores = validationResult(req);
@@ -36,7 +37,7 @@ router.post('/', [
   }
 });
 
-router.put('/:id', [
+router.put('/:id', verificarToken, soloAdmin, [
   body('nombre').notEmpty().withMessage('El nombre es obligatorio')
 ], async (req, res) => {
   const errores = validationResult(req);
@@ -53,7 +54,7 @@ router.put('/:id', [
   }
 });
 
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', verificarToken, soloAdmin, async (req, res) => {
   try {
     const autor = await Autor.findByPk(req.params.id);
     if (!autor) return res.status(404).json({ error: 'Autor no encontrado' });
