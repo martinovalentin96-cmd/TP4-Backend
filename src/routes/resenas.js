@@ -50,6 +50,9 @@ router.post('/', verificarToken, [
   if (!errores.isEmpty()) return res.status(400).json({ errors: errores.array() });
 
   try {
+    const yaExiste = await Resena.findOne({ where: { libroId: req.body.libroId, usuarioId: req.usuario.id } });
+    if (yaExiste) return res.status(400).json({ error: 'Ya escribiste una reseña para este libro' });
+
     const resena = await Resena.create({
       libroId: req.body.libroId,
       puntaje: req.body.puntaje,

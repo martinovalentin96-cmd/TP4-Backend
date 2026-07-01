@@ -8,20 +8,15 @@ const { verificarToken, soloAdmin } = require('../middleware/auth');
 router.get('/', async (req, res) => {
   try {
     const where = {};
-    const includeAutor = { model: Autor };
 
     if (req.query.titulo) {
       where.titulo = { [Op.like]: `%${req.query.titulo}%` };
-    }
-    if (req.query.autor) {
-      includeAutor.where = { nombre: { [Op.like]: `%${req.query.autor}%` } };
-      includeAutor.required = true;
     }
 
     const libros = await Libro.findAll({
       where,
       include: [
-        includeAutor,
+        { model: Autor },
         { model: Genero },
         { model: Editorial }
       ]
